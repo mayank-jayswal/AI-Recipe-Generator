@@ -222,15 +222,8 @@ const MealPlanner = () => {
                         setShowAddModal(false);
                         setSelectedSlot(null);
                     }}
-                    onSuccess={(newMeal) => {
-                        // Add to local state
-                        const updatedPlan = { ...mealPlan };
-                        const date = selectedSlot.date;
-                        if (!updatedPlan[date]) {
-                            updatedPlan[date] = {};
-                        }
-                        updatedPlan[date][selectedSlot.mealType] = newMeal;
-                        setMealPlan(updatedPlan);
+                    onSuccess={async () => {
+                        await fetchMealPlan();
                         setShowAddModal(false);
                         setSelectedSlot(null);
                     }}
@@ -267,11 +260,10 @@ const AddMealModal = ({ date, mealType, recipes, onClose, onSuccess }) => {
             });
 
             toast.success('Meal added to plan');
-            onSuccess();
+            await onSuccess();
         } catch (error) {
             toast.error('Failed to add meal');
-           } 
-        finally {
+        } finally {
             setLoading(false);
         }
     };
